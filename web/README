@@ -1,0 +1,1 @@
+docker run -dit --name apache -v ./html/:/var/www/html -v ./apache2/:/etc/apache2 552c7656058c

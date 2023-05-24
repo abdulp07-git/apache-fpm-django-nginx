@@ -1,0 +1,34 @@
+version: '3'
+services:
+   
+  web:
+    build: "./web"
+    volumes: 
+      - ./web/html/:/var/www/html
+      - ./web/apache2/:/etc/apache2
+    links:
+      - db
+
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes: 
+      - ./db:/var/lib/mysql
+  
+  django:
+    build: "./django"
+    volumes:
+      - ./django/learning_bee:/app/learning_bee
+  
+  proxy:
+    build: "./nginx"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+    links:
+      - web     
+      - django
+
