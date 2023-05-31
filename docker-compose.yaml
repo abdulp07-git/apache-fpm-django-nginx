@@ -1,34 +1,32 @@
 version: '3'
 services:
-   
   web:
-    build: "./web"
-    volumes: 
-      - ./web/html/:/var/www/html
+    build: web
+    volumes:
       - ./web/apache2/:/etc/apache2
+      - ./web/html:/var/www/html
     links:
       - db
-
   db:
     image: mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-    volumes: 
-      - ./db:/var/lib/mysql
-  
-  django:
-    build: "./django"
+      MYSQL_ROOT_PASSWORD: password
     volumes:
-      - ./django/learning_bee:/app/learning_bee
-  
-  proxy:
-    build: "./nginx"
+      - ./db/:/var/lib/mysql
+
+  nginx: 
+    build: nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d
     links:
-      - web     
-      - django
+      - web
+
+  django:
+    build:
+      context: ./django/app
+      target: builder
+
 
